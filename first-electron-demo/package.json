@@ -1,0 +1,22 @@
+{
+  "name": "firstelectrondemo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "build": {
+    "appId": "firstelectrondemo"
+  },
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^6.0.11"
+  },
+  "dependencies": {
+    "jquery": "^3.4.1"
+  }
+}
