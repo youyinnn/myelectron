@@ -11,14 +11,26 @@ function createWindow() {
 
     // app.setAppUserModelId('firstelectrondemo')
 
+    // 获取当前设备屏幕的大小
+    const { width, height } = require('electron').screen.getPrimaryDisplay().workAreaSize
+
     // 创建浏览器窗口
     win = new BrowserWindow({
-        // width: 800,
-        // height: 600,
+        width: width,
+        height: height,
         webPreferences: {
             nodeIntegration: true,
-            preload: path.join(__dirname, 'preload.js')
-        }
+            preload: path.join(__dirname, 'preload.js'),
+
+        },
+        // 窗口无边框
+        // frame: false,
+        title: 'hello',
+        useContentSize: true,
+
+        // 这俩要一起用
+        transparent: true,
+        opacity: 0.8,
     })
 
     // 加载html文件

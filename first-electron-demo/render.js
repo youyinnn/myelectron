@@ -1,6 +1,7 @@
 console.log('Load render.js')
 const $ = require('jquery')
 const win = require('electron').remote.getGlobal('share').win
+const app = require('electron').remote.app
 
 let progress = 0;
 $('#processbar').click(function () {
@@ -41,3 +42,62 @@ $('#smessage').click(() => {
     console.log(ipcRenderer.sendSync('synchronous-message','s-ping'))
 })
 
+$('#exit').click(() => {
+    app.exit(0)
+})
+
+$('#relaunch').click(() => {
+    app.relaunch()
+    app.exit(0)
+})
+
+$('#showemoji').click(() => {
+    app.showEmojiPanel()
+})
+
+const { webContents } = require('electron').remote
+
+let contents = webContents.getAllWebContents()
+for (let c of contents) {
+    console.log(c.getTitle())
+    console.log(c.getURL())
+}
+
+// 监听content的findInPage方法的调用
+contents[0].on('found-in-page', (event, result) => {
+    console.log(event)
+    console.log(result)
+})
+
+
+// 用于创建一个小的view
+const { BrowserView } = require('electron').remote
+
+let view
+$('#webview').click(() => {
+    view = new BrowserView()
+    win.setBrowserView(view)
+    view.setBounds({
+        x: 12,
+        y: 128,
+        width: 100,
+        height: 100
+    })
+    view.webContents.loadURL('https://github.com')
+})
+
+
+$('#jietu').click(() => {
+    // 截图
+    let c = contents[0].capturePage()
+    // 从promise中获取数据
+    c.then(function (data) {
+        const fs = require('fs')
+        // 用fs处理buffer
+        let bf = data.toPNG()
+        // 写到文件
+        fs.writeFile('a.png', bf, (err) => {})
+    })
+})
+
+const { dialog } = require('electron').remote
