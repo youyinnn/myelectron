@@ -1,6 +1,8 @@
 const {
     app,
-    BrowserWindow
+    BrowserWindow,
+    Menu,
+    MenuItem
 } = require('electron')
 const path = require('path')
 
@@ -12,7 +14,10 @@ function createWindow() {
     // app.setAppUserModelId('firstelectrondemo')
 
     // 获取当前设备屏幕的大小
-    const { width, height } = require('electron').screen.getPrimaryDisplay().workAreaSize
+    const {
+        width,
+        height
+    } = require('electron').screen.getPrimaryDisplay().workAreaSize
 
     // 创建浏览器窗口
     win = new BrowserWindow({
@@ -21,7 +26,6 @@ function createWindow() {
         webPreferences: {
             nodeIntegration: true,
             preload: path.join(__dirname, 'preload.js'),
-
         },
         // 窗口无边框
         // frame: false,
@@ -31,6 +35,13 @@ function createWindow() {
         // 这俩要一起用
         transparent: true,
         opacity: 0.8,
+
+        // 是否在任务栏中显示窗口
+        // skipTaskbar: true,
+
+        // 终极全屏模式 配合上无边框之后 就像游戏的全屏模式一样
+        // kiosk: true,
+
     })
 
     // 加载html文件
@@ -49,6 +60,45 @@ function createWindow() {
     global.share = {
         win: win
     }
+
+    // 应用菜单
+    // Menu.setApplicationMenu(null)
+
+    let isMac = false;
+
+    const template = [
+        {
+            label: 'Menu1',
+            submenu: [
+                new MenuItem({
+                    label: 'about',
+                    click() {
+                        // 这行不会打在chrome调试控制台上 因为这里的console是nodejs后台
+                        console.log('about')
+                    }
+                }),
+                { type: 'separator' },
+                { role: 'about' },
+                new MenuItem({
+                    label: 'xixi',
+                    type: 'checkbox',
+                    click() {
+                        console.log('check')
+                    }
+                }),
+                new MenuItem({
+                    label: 'haha',
+                    type: 'radio',
+                    click() {
+                        console.log('radio')
+                    }
+                }),
+            ]
+        },
+    ]
+
+    const menu = Menu.buildFromTemplate(template)
+    Menu.setApplicationMenu(menu)
 
 }
 

@@ -101,3 +101,70 @@ $('#jietu').click(() => {
 })
 
 const { dialog } = require('electron').remote
+
+$('#sopendialog').click(() => {
+    let p = dialog.showOpenDialogSync(win, {})
+    console.log(p)
+})
+
+$('#asopendialog').click(() => {
+    let p = dialog.showOpenDialog(win, {})
+    p.then((data) => {
+        console.log(data)
+        console.log(data.filePaths)
+    })
+})
+
+$('#smsgboxdialog').click(() => {
+    let rs = dialog.showMessageBoxSync(win, {
+        // type: 'info',
+        // type: 'error',
+        type: 'question',
+        title: 'Message',
+        buttons: ['Option one', 'Option two'],
+        message: 'This is a stupid box.',
+        detail: 'Extra message.',
+
+
+    })
+    console.log(rs)
+})
+
+// 模态窗口意味着 父窗口已经不可选 必须等模态窗口关闭之后 父窗口才能工作
+const { BrowserWindow } = require('electron').remote
+$('#modelwindow').click(() => {
+    let child = new BrowserWindow({
+        parent: win, 
+        modal: true,
+        show: false
+    })
+    child.loadURL('http://github.com')
+    child.on('ready-to-show', () => {
+        child.show()
+    })
+})
+
+const { remote } = require('electron')
+const { Menu, MenuItem } = remote
+
+// 自定义右键菜单
+const menu = new Menu()
+menu.append(new MenuItem({
+    label: 'MenuItem1', 
+    click() {
+         console.log('item 1 clicked') 
+        } 
+    }))
+menu.append(new MenuItem({ 
+    type: 'separator' 
+}))
+menu.append(new MenuItem({ 
+    label: 'MenuItem2', 
+    type: 'checkbox', 
+    checked: true 
+}))
+
+window.addEventListener('contextmenu', (e) => {
+  e.preventDefault()
+  menu.popup({ window: remote.getCurrentWindow() })
+}, false)
