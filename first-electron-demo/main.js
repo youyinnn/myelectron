@@ -2,7 +2,8 @@ const {
     app,
     BrowserWindow,
     Menu,
-    MenuItem
+    MenuItem,
+    Tray
 } = require('electron')
 const path = require('path')
 
@@ -54,12 +55,29 @@ function createWindow() {
     win.on('closed', () => {
         // 取消对win对象的引用，如果应用支持多窗口的话
         // 通常会把多个window对象存在一个数组里 然后删除相应的元素
+        // 不设置null的话 win会是destoty状态
         win = null
     })
 
+    // 托盘
+    let tray = new Tray('diamond.png')
+    const contextMenu = Menu.buildFromTemplate([
+        {label: 'one', type: 'radio', click: function () {
+            console.log('hello')
+        }}
+    ])
+    tray.setToolTip('Hello')
+    tray.setContextMenu(contextMenu)
+
     global.share = {
-        win: win
+        win: win,
+        // 如果tray不share的话 它就会莫名其妙地消失
+        tray: tray
     }
+
+    tray.on('double-click', () => {
+        win.show()
+    })
 
     // 应用菜单
     // Menu.setApplicationMenu(null)

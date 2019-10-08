@@ -1,6 +1,7 @@
 console.log('Load render.js')
 const $ = require('jquery')
 const win = require('electron').remote.getGlobal('share').win
+const tray = require('electron').remote.getGlobal('share').tray
 const app = require('electron').remote.app
 
 let progress = 0;
@@ -168,3 +169,12 @@ window.addEventListener('contextmenu', (e) => {
   e.preventDefault()
   menu.popup({ window: remote.getCurrentWindow() })
 }, false)
+
+// 取消窗口关闭则推出应用的行为
+window.onbeforeunload = (e) => {
+    console.log('I don\'t want to be closed.')
+    // 返回默认值会取消关闭
+    e.returnValue = false
+    // 直接调用hide方法 这样窗口会关闭 但应用还未推出 还能通过托盘还原
+    win.hide()
+}
