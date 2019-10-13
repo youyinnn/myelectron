@@ -14,15 +14,8 @@ $('#processbar').click(function () {
     win.setProgressBar(progress)
 })
 
-let flash = false
 $('#flash').click(function () {
-    if (flash) {
-        flash = false
-    } else {
-        flash = true
-    }
-    // win.once('focus', () => win.flashFrame(false))
-    win.flashFrame(flash)
+    win.flashFrame(true)
 })
 
 const { ipcRenderer } = require('electron')
@@ -79,8 +72,8 @@ $('#webview').click(() => {
     view = new BrowserView()
     win.setBrowserView(view)
     view.setBounds({
-        x: 12,
-        y: 128,
+        x: 0,
+        y: 0,
         width: 100,
         height: 100
     })
@@ -135,7 +128,7 @@ $('#smsgboxdialog').click(() => {
 const { BrowserWindow } = require('electron').remote
 $('#modelwindow').click(() => {
     let child = new BrowserWindow({
-        parent: win, 
+        parent: win,
         modal: true,
         show: false
     })
@@ -170,11 +163,11 @@ window.addEventListener('contextmenu', (e) => {
   menu.popup({ window: remote.getCurrentWindow() })
 }, false)
 
-// 取消窗口关闭则推出应用的行为
+// 取消窗口关闭则退出应用的行为
 window.onbeforeunload = (e) => {
     console.log('I don\'t want to be closed.')
     // 返回默认值会取消关闭
     e.returnValue = false
-    // 直接调用hide方法 这样窗口会关闭 但应用还未推出 还能通过托盘还原
+    // 直接调用hide方法 这样窗口会关闭 但应用还未退出 还能通过托盘还原
     win.hide()
 }

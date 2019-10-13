@@ -28,13 +28,12 @@ function createWindow() {
             nodeIntegration: true,
             preload: path.join(__dirname, 'preload.js'),
         },
+        title: 'hello',
+
         // 窗口无边框
         // frame: false,
-        title: 'hello',
-        useContentSize: true,
 
-        // 这俩要一起用
-        transparent: true,
+        // 透明度
         opacity: 0.8,
 
         // 是否在任务栏中显示窗口
