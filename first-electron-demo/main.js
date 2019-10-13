@@ -79,10 +79,6 @@ function createWindow() {
     })
 
     // 应用菜单
-    // Menu.setApplicationMenu(null)
-
-    let isMac = false;
-
     const template = [
         {
             label: 'Menu1',

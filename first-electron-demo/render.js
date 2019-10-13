@@ -5,7 +5,7 @@ const tray = require('electron').remote.getGlobal('share').tray
 const app = require('electron').remote.app
 
 let progress = 0;
-$('#processbar').click(function () {
+$('#processbar').click(function() {
     if (progress === 0) {
         progress = 0.5
     } else {
@@ -14,15 +14,17 @@ $('#processbar').click(function () {
     win.setProgressBar(progress)
 })
 
-$('#flash').click(function () {
+$('#flash').click(function() {
     win.flashFrame(true)
 })
 
-const { ipcRenderer } = require('electron')
+const {
+    ipcRenderer
+} = require('electron')
 
 $('#asmessage').click(() => {
     // 异步信息 直接发送
-    ipcRenderer.send('asynchronous-message','as-ping')
+    ipcRenderer.send('asynchronous-message', 'as-ping')
 })
 
 // 监听异步信息的响应
@@ -33,7 +35,7 @@ ipcRenderer.on('asynchronous-reply', (event, arg) => {
 
 $('#smessage').click(() => {
     // 同步信息 发送之后等待响应
-    console.log(ipcRenderer.sendSync('synchronous-message','s-ping'))
+    console.log(ipcRenderer.sendSync('synchronous-message', 's-ping'))
 })
 
 $('#exit').click(() => {
@@ -49,7 +51,9 @@ $('#showemoji').click(() => {
     app.showEmojiPanel()
 })
 
-const { webContents } = require('electron').remote
+const {
+    webContents
+} = require('electron').remote
 
 let contents = webContents.getAllWebContents()
 for (let c of contents) {
@@ -65,7 +69,9 @@ contents[0].on('found-in-page', (event, result) => {
 
 
 // 用于创建一个小的view
-const { BrowserView } = require('electron').remote
+const {
+    BrowserView
+} = require('electron').remote
 
 let view
 $('#webview').click(() => {
@@ -85,7 +91,7 @@ $('#jietu').click(() => {
     // 截图
     let c = contents[0].capturePage()
     // 从promise中获取数据
-    c.then(function (data) {
+    c.then(function(data) {
         const fs = require('fs')
         // 用fs处理buffer
         let bf = data.toPNG()
@@ -94,7 +100,9 @@ $('#jietu').click(() => {
     })
 })
 
-const { dialog } = require('electron').remote
+const {
+    dialog
+} = require('electron').remote
 
 $('#sopendialog').click(() => {
     let p = dialog.showOpenDialogSync(win, {})
@@ -118,14 +126,14 @@ $('#smsgboxdialog').click(() => {
         buttons: ['Option one', 'Option two'],
         message: 'This is a stupid box.',
         detail: 'Extra message.',
-
-
     })
     console.log(rs)
 })
 
 // 模态窗口意味着 父窗口已经不可选 必须等模态窗口关闭之后 父窗口才能工作
-const { BrowserWindow } = require('electron').remote
+const {
+    BrowserWindow
+} = require('electron').remote
 $('#modelwindow').click(() => {
     let child = new BrowserWindow({
         parent: win,
@@ -138,29 +146,54 @@ $('#modelwindow').click(() => {
     })
 })
 
-const { remote } = require('electron')
-const { Menu, MenuItem } = remote
+const {
+    remote
+} = require('electron')
+const {
+    Menu,
+    MenuItem
+} = remote
 
 // 自定义右键菜单
 const menu = new Menu()
 menu.append(new MenuItem({
-    label: 'MenuItem1', 
+    label: 'MenuItem1',
     click() {
-         console.log('item 1 clicked') 
-        } 
-    }))
-menu.append(new MenuItem({ 
-    type: 'separator' 
+        console.log('item 1 clicked')
+    }
 }))
-menu.append(new MenuItem({ 
-    label: 'MenuItem2', 
-    type: 'checkbox', 
-    checked: true 
+menu.append(new MenuItem({
+    type: 'separator'
+}))
+menu.append(new MenuItem({
+    label: 'MenuItem2',
+    type: 'checkbox',
+    checked: true
+}))
+// 有下标
+menu.append(new MenuItem({
+    label: 'MenuItem3',
+    type: 'radio',
+    click(mi, bwin, event) {
+        console.log(mi.overrideProperty)
+    },
+    sublabel: 'xixi',
+}))
+// 子菜单
+menu.append(new MenuItem({
+    label: 'MenuItem4',
+    type: 'submenu',
+    sublabel: 'xixi',
+    submenu: [new MenuItem({
+        label: 'lolo',
+    })]
 }))
 
 window.addEventListener('contextmenu', (e) => {
-  e.preventDefault()
-  menu.popup({ window: remote.getCurrentWindow() })
+    e.preventDefault()
+    menu.popup({
+        window: remote.getCurrentWindow()
+    })
 }, false)
 
 // 取消窗口关闭则退出应用的行为
